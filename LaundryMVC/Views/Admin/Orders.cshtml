@@ -1,0 +1,498 @@
+﻿@model List<LaundryMVC.Models.Order>
+
+@{
+    ViewData["Title"] = "Manage Orders";
+    int serial = 1;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Manage Orders</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                width: 500px;
+                height: 500px;
+                border-radius: 50%;
+                background: radial-gradient(circle,rgba(99,102,241,0.25),transparent 70%);
+                top: -100px;
+                left: -100px;
+                pointer-events: none;
+            }
+
+            body::after {
+                content: '';
+                position: fixed;
+                width: 400px;
+                height: 400px;
+                border-radius: 50%;
+                background: radial-gradient(circle,rgba(139,92,246,0.2),transparent 70%);
+                bottom: -80px;
+                right: -80px;
+                pointer-events: none;
+            }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 64px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .brand-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#6366f1,#8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 16px rgba(139,92,246,0.6);
+            font-size: 16px;
+            color: white;
+        }
+
+        .nav-badge {
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: rgba(99,102,241,0.2);
+            color: #a5b4fc;
+            border: 1px solid rgba(99,102,241,0.3);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+            .page-head h2 {
+                font-size: 22px;
+                font-weight: 600;
+                color: #fff;
+            }
+
+            .page-head p {
+                font-size: 13px;
+                color: rgba(255,255,255,0.45);
+                margin-top: 3px;
+            }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.75);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 13px;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+
+            .back-btn:hover {
+                background: rgba(255,255,255,0.13);
+            }
+
+        .glass-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(16px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 24px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        thead th {
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.15s;
+        }
+
+            tbody tr:hover {
+                background: rgba(255,255,255,0.04);
+            }
+
+            tbody tr:last-child {
+                border-bottom: none;
+            }
+
+        td {
+            padding: 13px 14px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .status-pill {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .s-pending {
+            background: rgba(156,163,175,0.2);
+            color: #d1d5db;
+            border: 1px solid rgba(156,163,175,0.3);
+        }
+
+        .s-washing {
+            background: rgba(245,158,11,0.2);
+            color: #fcd34d;
+            border: 1px solid rgba(245,158,11,0.35);
+        }
+
+        .s-ready {
+            background: rgba(99,102,241,0.2);
+            color: #a5b4fc;
+            border: 1px solid rgba(99,102,241,0.35);
+        }
+
+        .s-delivered {
+            background: rgba(16,185,129,0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16,185,129,0.35);
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .btn-update {
+            background: rgba(99,102,241,0.25);
+            color: #a5b4fc;
+            border: 1px solid rgba(99,102,241,0.35);
+        }
+
+        .btn-edit {
+            background: rgba(245,158,11,0.2);
+            color: #fcd34d;
+            border: 1px solid rgba(245,158,11,0.3);
+        }
+
+        .btn-delete {
+            background: rgba(239,68,68,0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        form.inline-form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        select.glass-select {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            padding: 6px 10px;
+        }
+
+            select.glass-select option {
+                background: #1e1b4b;
+                color: #fff;
+            }
+
+    </style>
+
+</head>
+
+<body>
+
+    <nav>
+
+        <a class="brand">
+
+            <div class="brand-dot">
+                <i class="bi bi-basket2-fill"></i>
+            </div>
+
+            Laundry Express
+
+        </a>
+
+        <span class="nav-badge">
+            Admin Panel
+        </span>
+
+    </nav>
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="page-head">
+
+            <div>
+
+                <h2>Manage Orders</h2>
+
+                <p>
+                    View and update all customer laundry orders
+                </p>
+
+            </div>
+
+            <!-- BACK BUTTON -->
+
+            <a asp-action="Dashboard"
+               asp-controller="Admin"
+               class="back-btn">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Back
+
+            </a>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <div class="glass-card">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var o in Model)
+                        {
+                            <tr>
+
+                                <td>@serial</td>
+
+                                <td>@o.ItemName</td>
+
+                                <td>@o.Quantity</td>
+
+                                <td style="color:#6ee7b7; font-weight:600;">
+
+                                    ₹ @o.TotalPrice
+
+                                </td>
+
+                                <td>@o.PaymentMethod</td>
+
+                                <td>
+
+                                    @if (o.Status == "Pending")
+                                    {
+                                        <span class="status-pill s-pending">Pending</span>
+                                    }
+                                    else if (o.Status == "Washing")
+                                    {
+                                        <span class="status-pill s-washing">Washing</span>
+                                    }
+                                    else if (o.Status == "Ready")
+                                    {
+                                        <span class="status-pill s-ready">Ready</span>
+                                    }
+                                    else if (o.Status == "Delivered")
+                                    {
+                                        <span class="status-pill s-delivered">Delivered</span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    <form asp-action="UpdateStatus"
+                                          method="post"
+                                          class="inline-form">
+
+                                        <input type="hidden"
+                                               name="Id"
+                                               value="@o.Id" />
+
+                                        <select name="Status"
+                                                class="glass-select">
+
+                                            <option value="Pending">
+                                                Pending
+                                            </option>
+
+                                            <option value="Washing">
+                                                Washing
+                                            </option>
+
+                                            <option value="Ready">
+                                                Ready
+                                            </option>
+
+                                            <option value="Delivered">
+                                                Delivered
+                                            </option>
+
+                                        </select>
+
+                                        <button type="submit"
+                                                class="btn-icon btn-update">
+
+                                            <i class="bi bi-check-lg"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                                <td>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@o.Id"
+                                       class="btn-icon btn-edit"
+                                       style="text-decoration:none;">
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                    </a>
+
+                                    <form asp-action="Delete"
+                                          asp-route-id="@o.Id"
+                                          method="post"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="btn-icon btn-delete"
+                                                onclick="return confirm('Delete this order?')">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                            serial++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="8">
+
+                                No Orders Found
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

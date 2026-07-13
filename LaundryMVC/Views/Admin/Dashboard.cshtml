@@ -1,0 +1,593 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+
+    <style>
+        :root {
+            --shadow-card: 0 12px 40px rgba(30,120,200,0.15), 0 2px 8px rgba(30,120,200,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #dff4ff;
+        }
+
+        .dash {
+            background: linear-gradient(135deg, #d0edff 0%, #e8f7ff 40%, #b8dff5 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 220px;
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(18px);
+            border-right: 1px solid rgba(255,255,255,0.4);
+            display: flex;
+            flex-direction: column;
+            padding: 25px 0;
+            box-shadow: 4px 0 24px rgba(60,150,220,0.10);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0e5fa8;
+            padding: 0 24px 25px;
+            border-bottom: 1px solid rgba(100,180,240,0.22);
+            margin-bottom: 20px;
+        }
+
+        .nav-item,
+        .logout-btn {
+            padding: 14px 24px;
+            color: #246b9c;
+            text-decoration: none;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+            .nav-item:hover,
+            .logout-btn:hover {
+                background: rgba(100,190,240,0.12);
+            }
+
+            .nav-item.active {
+                background: rgba(100,190,240,0.15);
+                border-left-color: #1a9af5;
+                color: #0a6fc7;
+                font-weight: 600;
+            }
+
+        .nav-spacer {
+            flex: 1;
+        }
+
+        .logout-btn {
+            color: red;
+        }
+
+        /* MAIN */
+
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #0a4f8c;
+        }
+
+        .page-sub {
+            color: #5d9cc4;
+            margin-top: 4px;
+        }
+
+        .live-badge {
+            background: rgba(255,255,255,0.7);
+            padding: 8px 15px;
+            border-radius: 30px;
+            color: #0ea67a;
+            border: 1px solid rgba(14,166,122,0.25);
+            font-size: 13px;
+        }
+
+        /* CARDS */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.65);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: var(--shadow-card);
+            transition: 0.2s;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-4px);
+            }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .blue {
+            background: linear-gradient(135deg,#b8e4ff,#7ec8f7);
+        }
+
+        .green {
+            background: linear-gradient(135deg,#b2f0e0,#5dd9b4);
+        }
+
+        .orange {
+            background: linear-gradient(135deg,#ffe7b0,#ffcb5c);
+        }
+
+        .sky {
+            background: linear-gradient(135deg,#d2ecff,#8ccfff);
+        }
+
+        .stat-label {
+            color: #6aaccc;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 34px;
+            font-weight: bold;
+            color: #0a4f8c;
+        }
+
+        /* BOTTOM SECTION */
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.68);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 18px;
+            color: #0a4f8c;
+        }
+
+        /* CHART */
+
+        .chart-wrap {
+            height: 150px;
+            display: flex;
+            align-items: end;
+            gap: 10px;
+        }
+
+        .bar-col {
+            flex: 1;
+            text-align: center;
+        }
+
+        .bar-group {
+            height: 130px;
+            display: flex;
+            align-items: end;
+            gap: 3px;
+        }
+
+        .bar {
+            flex: 1;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .bar-label {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #6aaccc;
+        }
+
+        /* QUICK ACTIONS */
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            background: rgba(255,255,255,0.7);
+            padding: 14px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            color: #256b9d;
+            transition: 0.2s;
+        }
+
+            .action-btn:hover {
+                background: rgba(26,154,245,0.12);
+            }
+
+        .action-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ab-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @@media(max-width:900px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media(max-width:600px) {
+
+            .dash {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dash">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                🧺 Laundry Admin
+            </div>
+
+            <a class="nav-item active"
+               asp-controller="Admin"
+               asp-action="Dashboard">
+
+                📊 Dashboard
+
+            </a>
+
+            <!-- ✅ CUSTOMERS -->
+
+            <a class="nav-item"
+               asp-controller="Admin"
+               asp-action="Customers">
+
+                👥 Customers
+
+            </a>
+
+            <!-- ✅ ADMINS -->
+
+            <a class="nav-item"
+               asp-controller="Admin"
+               asp-action="Admins">
+
+                🛡️ Admins
+
+            </a>
+
+            <!-- ✅ ORDERS -->
+
+            <a class="nav-item"
+               asp-controller="Admin"
+               asp-action="Orders">
+
+                📦 Orders
+
+            </a>
+
+            <!-- ✅ ITEMS -->
+
+            <a class="nav-item"
+               asp-controller="Admin"
+               asp-action="Items">
+
+                🧺 Manage Items
+
+            </a>
+
+            <div class="nav-spacer"></div>
+
+            <a class="logout-btn"
+               asp-controller="Admin"
+               asp-action="Logout">
+
+                🚪 Logout
+
+            </a>
+
+        </aside>
+
+        <!-- MAIN -->
+
+        <main class="main">
+
+            <div class="topbar">
+
+                <div>
+                    <div class="page-title">
+                        Dashboard Overview
+                    </div>
+
+                    <div class="page-sub">
+                        Laundry Management System
+                    </div>
+                </div>
+
+                <div class="live-badge">
+                    🟢 Live Data
+                </div>
+
+            </div>
+
+            <!-- STATISTICS -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue">
+                        📦
+                    </div>
+
+                    <div class="stat-label">
+                        Total Orders
+                    </div>
+
+                    <div class="stat-value">
+                        @ViewBag.TotalOrders
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+                        👥
+                    </div>
+
+                    <div class="stat-label">
+                        Total Customers
+                    </div>
+
+                    <div class="stat-value">
+                        @ViewBag.TotalCustomers
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">
+                        ⏳
+                    </div>
+
+                    <div class="stat-label">
+                        Pending Orders
+                    </div>
+
+                    <div class="stat-value">
+                        @ViewBag.Pending
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon sky">
+                        ✅
+                    </div>
+
+                    <div class="stat-label">
+                        Completed Orders
+                    </div>
+
+                    <div class="stat-value">
+                        @ViewBag.Completed
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTTOM -->
+
+            <div class="bottom-grid">
+
+                <!-- CHART -->
+
+                <div class="glass-card">
+
+                    <div class="card-title">
+                        Weekly Orders
+                    </div>
+
+                    <div class="chart-wrap" id="chart"></div>
+
+                </div>
+
+                <!-- QUICK ACTIONS -->
+
+                <div class="glass-card">
+
+                    <div class="card-title">
+                        Quick Actions
+                    </div>
+
+                    <a class="action-btn"
+                       asp-controller="Admin"
+                       asp-action="Customers">
+
+                        <div class="action-left">
+                            <div class="ab-icon blue">👥</div>
+                            <span>View Customers</span>
+                        </div>
+
+                        ➜
+
+                    </a>
+
+                    <a class="action-btn"
+                       asp-controller="Admin"
+                       asp-action="Admins">
+
+                        <div class="action-left">
+                            <div class="ab-icon orange">🛡️</div>
+                            <span>View Admins</span>
+                        </div>
+
+                        ➜
+
+                    </a>
+
+                    <a class="action-btn"
+                       asp-controller="Admin"
+                       asp-action="Orders">
+
+                        <div class="action-left">
+                            <div class="ab-icon green">📦</div>
+                            <span>Manage Orders</span>
+                        </div>
+
+                        ➜
+
+                    </a>
+
+                    <a class="action-btn"
+                       asp-controller="Admin"
+                       asp-action="Items">
+
+                        <div class="action-left">
+                            <div class="ab-icon sky">🧺</div>
+                            <span>Manage Items</span>
+                        </div>
+
+                        ➜
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+
+        const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+        const completed = [10,15,18,25,20,30,22];
+
+        const pending = [5,7,6,8,10,12,9];
+
+        const maxVal = Math.max(...completed,...pending)+5;
+
+        const chart = document.getElementById("chart");
+
+        days.forEach((d,i)=>{
+
+            const cH = (completed[i]/maxVal)*130;
+
+            const pH = (pending[i]/maxVal)*130;
+
+            chart.innerHTML += `
+            <div class="bar-col">
+
+                <div class="bar-group">
+
+                    <div class="bar"
+                         style="height:${cH}px;
+                         background:linear-gradient(#5bc4f8,#1a7bbf)">
+                    </div>
+
+                    <div class="bar"
+                         style="height:${pH}px;
+                         background:linear-gradient(#d6efff,#8ccfff)">
+                    </div>
+
+                </div>
+
+                <div class="bar-label">${d}</div>
+
+            </div>`;
+        });
+
+    </script>
+
+</body>
+</html>

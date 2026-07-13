@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LaundryManagement/LaundryManagement.csproj" />
+  <Project Path="LaundryMVC/LaundryMVC.csproj" Id="ae730d3a-449b-4ecc-a532-690052ae0e1c" />
+</Solution>

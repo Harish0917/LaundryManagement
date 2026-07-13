@@ -1,0 +1,462 @@
+﻿@model List<LaundryMVC.Models.Order>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI',sans-serif;
+            background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                width: 450px;
+                height: 450px;
+                border-radius: 50%;
+                background: radial-gradient(circle,rgba(99,102,241,0.25),transparent 70%);
+                top: -80px;
+                left: -80px;
+                pointer-events: none;
+            }
+
+            body::after {
+                content: '';
+                position: fixed;
+                width: 380px;
+                height: 380px;
+                border-radius: 50%;
+                background: radial-gradient(circle,rgba(16,185,129,0.18),transparent 70%);
+                bottom: -60px;
+                right: -60px;
+                pointer-events: none;
+            }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 64px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .brand-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#6366f1,#8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 16px rgba(139,92,246,0.6);
+            font-size: 16px;
+            color: white;
+        }
+
+        .top-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+            .nav-btn:hover {
+                background: rgba(255,255,255,0.15);
+            }
+
+        .order-more-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: linear-gradient(135deg,#6366f1,#8b5cf6);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+            transition: transform 0.1s;
+        }
+
+            .order-more-btn:active {
+                transform: scale(0.98);
+            }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 36px 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-head {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+            .page-head h2 {
+                font-size: 22px;
+                font-weight: 600;
+                color: #fff;
+                margin-bottom: 5px;
+            }
+
+            .page-head p {
+                font-size: 13px;
+                color: rgba(255,255,255,0.45);
+            }
+
+        .glass-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(16px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 24px;
+            overflow-x: auto;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        thead th {
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.15s;
+        }
+
+            tbody tr:hover {
+                background: rgba(255,255,255,0.04);
+            }
+
+            tbody tr:last-child {
+                border-bottom: none;
+            }
+
+        td {
+            padding: 13px 14px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .status-pill {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .s-pending {
+            background: rgba(156,163,175,0.2);
+            color: #d1d5db;
+            border: 1px solid rgba(156,163,175,0.3);
+        }
+
+        .s-washing {
+            background: rgba(245,158,11,0.2);
+            color: #fcd34d;
+            border: 1px solid rgba(245,158,11,0.35);
+        }
+
+        .s-ready {
+            background: rgba(99,102,241,0.2);
+            color: #a5b4fc;
+            border: 1px solid rgba(99,102,241,0.35);
+        }
+
+        .s-delivered {
+            background: rgba(16,185,129,0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16,185,129,0.35);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            color: rgba(255,255,255,0.35);
+            font-size: 14px;
+        }
+
+        .bottom-btn {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg,#059669,#10b981);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 13px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(16,185,129,0.4);
+            transition: transform 0.1s;
+        }
+
+            .more-btn:active {
+                transform: scale(0.98);
+            }
+
+    </style>
+
+</head>
+
+<body>
+
+    <nav>
+
+        <a class="brand">
+
+            <div class="brand-dot">
+                <i class="bi bi-basket2-fill"></i>
+            </div>
+
+            Laundry Express
+
+        </a>
+
+        <div class="top-btns">
+
+            <!-- BACK BUTTON -->
+
+            <a asp-action="InvoiceMultiple"
+               asp-controller="Laun"
+               class="nav-btn">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Back
+
+            </a>
+
+            <!-- ORDER MORE -->
+
+            <a asp-action="Index"
+               asp-controller="Laun"
+               class="order-more-btn">
+
+                <i class="bi bi-cart-plus"></i>
+
+                Order More
+
+            </a>
+
+        </div>
+
+    </nav>
+
+    <div class="container">
+
+        <div class="page-head">
+
+            <h2>
+                My laundry orders
+            </h2>
+
+            <p>
+                Track the status of your laundry in real time
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var order in Model)
+                        {
+                            <tr>
+
+                                <td style="font-weight:500;">
+                                    @order.ItemName
+                                </td>
+
+                                <td>
+                                    @order.Quantity
+                                </td>
+
+                                <td style="color:#6ee7b7;font-weight:600;">
+                                    ₹ @order.TotalPrice
+                                </td>
+
+                                <td>
+                                    @order.PaymentMethod
+                                </td>
+
+                                <td>
+
+                                    @if (order.Status == "Pending")
+                                    {
+                                        <span class="status-pill s-pending">
+                                            Pending
+                                        </span>
+                                    }
+                                    else if (order.Status == "Washing")
+                                    {
+                                        <span class="status-pill s-washing">
+                                            Washing
+                                        </span>
+                                    }
+                                    else if (order.Status == "Ready")
+                                    {
+                                        <span class="status-pill s-ready">
+                                            Ready
+                                        </span>
+                                    }
+                                    else if (order.Status == "Delivered")
+                                    {
+                                        <span class="status-pill s-delivered">
+                                            Delivered
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-pill s-pending">
+                                            @order.Status
+                                        </span>
+                                    }
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="5">
+
+                                <div class="empty-state">
+
+                                    <i class="bi bi-inbox"
+                                       style="font-size:36px;display:block;margin-bottom:10px;opacity:0.5;">
+                                    </i>
+
+                                    No orders found yet
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="bottom-btn">
+
+            <a asp-action="Index"
+               asp-controller="Laun"
+               class="more-btn">
+
+                <i class="bi bi-basket"></i>
+
+                Order More Laundry
+
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
