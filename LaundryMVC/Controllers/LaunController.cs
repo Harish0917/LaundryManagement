@@ -18,7 +18,7 @@ namespace LaundryMVC.Controllers
             _cont = repo;
         }
 
-        // ===================== SHOW ITEMS =====================
+
 
         public async Task<IActionResult> Index()
         {
@@ -26,7 +26,7 @@ namespace LaundryMVC.Controllers
             return View(items);
         }
 
-        // ===================== SINGLE ORDER =====================
+       
 
         [HttpPost]
         public async Task<IActionResult> AddOrder(Order order)
@@ -118,7 +118,7 @@ namespace LaundryMVC.Controllers
             return View(order);
         }
 
-        // ===================== SEND SINGLE INVOICE =====================
+        
 
         [HttpPost]
         public async Task<IActionResult> SendInvoiceEmail(Order model)
@@ -203,7 +203,7 @@ namespace LaundryMVC.Controllers
             );
         }
 
-        // ===================== ORDER HISTORY =====================
+      
 
         public async Task<IActionResult> OrderHistory()
         {
@@ -224,7 +224,7 @@ namespace LaundryMVC.Controllers
             return View(orders);
         }
 
-        // ===================== MULTIPLE ORDER =====================
+       
 
         [HttpPost]
         public async Task<IActionResult> AddMultipleOrders(
@@ -285,7 +285,7 @@ namespace LaundryMVC.Controllers
             return View("OrderSummaryMultiple", finalOrders);
         }
 
-        // ===================== ORDER SUMMARY MULTIPLE =====================
+   
 
         [HttpGet]
         public IActionResult OrderSummaryMultiple()
@@ -305,7 +305,7 @@ namespace LaundryMVC.Controllers
             return View(orders);
         }
 
-        // ===================== PAYMENT MULTIPLE =====================
+       
 
         [HttpPost]
         public async Task<IActionResult> PaymentMultiple(
@@ -368,7 +368,7 @@ namespace LaundryMVC.Controllers
             return RedirectToAction("InvoiceMultiple");
         }
 
-        // ===================== MULTIPLE INVOICE =====================
+        
 
         public IActionResult InvoiceMultiple()
         {
@@ -396,7 +396,6 @@ namespace LaundryMVC.Controllers
             return View(orders);
         }
 
-        // ===================== SEND MULTIPLE EMAIL =====================
 
         [HttpPost]
         public async Task<IActionResult> SendMultipleInvoiceEmail(
@@ -456,7 +455,7 @@ namespace LaundryMVC.Controllers
             return RedirectToAction("InvoiceMultiple");
         }
 
-        // ===================== MULTIPLE PDF =====================
+        
 
         public byte[] GenerateMultiplePdf(
             List<Order> orders,
