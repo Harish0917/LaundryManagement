@@ -146,7 +146,7 @@ namespace LaundryMVC.Controllers
             var users =
                 await _repo.GetAllCustomers();
 
-            // ✅ SHOW ONLY CUSTOMERS
+           
 
             var customers =
                 users
@@ -163,7 +163,7 @@ namespace LaundryMVC.Controllers
             var users =
                 await _repo.GetAllCustomers();
 
-            // ✅ SHOW ONLY ADMINS
+         
 
             var admins =
                 users
